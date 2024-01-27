@@ -1,0 +1,29 @@
+# Configuration for Logstash filter
+
+input {
+    beats {
+        port => "5044"
+    }
+}
+filter {
+    if [fields][log_type] == "error" {
+        grok {
+            match => { "message" => "\[%{DAY:day} %{MONTH:month} %{MONTHDAY:monthday} %{TIME:time} %{YEAR:year}\] \[%{LOGLEVEL:loglevel}\] %{GREEDYDATA:message}"}
+        }
+    }
+    else if [fields][log_type] == "access" {
+        grok {
+            match => { "message" => "%{IPORHOST:sourceaddress} (?:-|%{HTTPDUSER:[apache][access][user][identity]}) (?:-|%{HTTPDUSER:username}) \[%{HTTPDATE:timestamp}\] \"(?:%{WORD:[http][request][method]} %{NOTSPACE:[url][original]}(?: HTTP/%{NUMBER:[http][version]})?|%{DATA})\" (?:-|%{INT:[http][response][status_code]:int}) (?:-|%{INT:[http][response][body][bytes]:int}) \"(?:-|%{DATA:[http][request][referrer]})\" \"(?:-|%{DATA:[user_agent][original]})\"" }
+        }
+    }    
+    else {
+    }
+}
+output {
+    elasticsearch {
+      hosts => ["https://localhost:9200"]
+      ssl => true
+      api_key => 'jIbP-YwBrcDCGZF3gvY1:ezUbhp3pQsSaVFZ6QA8h1g' 
+      cacert => '/home/fyp/elasticsearch-8.11.2-linux-x86_64/elasticsearch-8.11.2/config/certs/http_ca.crt'
+      }
+}
