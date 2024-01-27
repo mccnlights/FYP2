@@ -1,0 +1,47 @@
+# Configuration file for Elasalert
+
+
+# This is the folder that contains the rule yaml files
+# This can also be a list of directories
+# Any .yaml file will be loaded as a rule
+rules_folder: /home/fyp/elastalert2.2/rules/
+
+# How often ElastAlert will query Elasticsearch
+# The unit can be anything from weeks to seconds
+run_every:
+  minutes: 1
+
+# ElastAlert will buffer results from the most recent
+# period of time, in case some log sources are not in real time
+buffer_time:
+  minutes: 15
+
+# The Elasticsearch hostname for metadata writeback
+# Note that every rule can have its own Elasticsearch host
+es_host: localhost
+
+# The Elasticsearch port
+es_port: 9200
+
+
+# Connect with TLS to Elasticsearch
+use_ssl: True
+
+
+# Use SSL authentication with client certificates client_cert must be
+# a pem file containing both cert and key for client
+ca_certs: /home/fyp/elasticsearch-8.11.2-linux-x86_64/elasticsearch-8.11.2/config/certs/http_ca.crt
+es_api_key: akliUC1Zd0JyY0RDR1pGM2d2WTE6ZXpVYmhwM3BRc1NhVkZaNlFBOGgxZw==
+# The index on es_host which is used for metadata storage
+# This can be a unmapped index, but it is recommended that you run
+# elastalert-create-index to set a mapping
+writeback_index: elastalert_status
+
+# If an alert fails for some reason, ElastAlert will retry
+# sending the alert until this time period has elapsed
+alert_time_limit:
+  days: 2
+
+smtp_host: smtp.gmail.com
+smtp_port: 25
+from_addr: elastic@gmail.co
