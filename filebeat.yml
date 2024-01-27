@@ -1,0 +1,46 @@
+###################### Filebeat Configuration Example #########################
+
+# This file is an example configuration file highlighting only the most common
+# options. The filebeat.reference.yml file from the same directory contains all the
+# supported options with more comments. You can use it as a reference.
+#
+# You can find the full configuration reference here:
+# https://www.elastic.co/guide/en/beats/filebeat/index.html
+
+# For more available modules and options, please see the filebeat.reference.yml sample
+# configuration file.
+
+# ============================== Filebeat inputs ===============================
+
+filebeat.inputs:
+- type: log
+  id: my-filestream-id-2
+  paths:
+    - /home/fyp/logs/apache2/error.log
+  fields: {log_type: error}
+- type: log
+  id: access-log
+  paths:
+    - /home/fyp/logs/apache2/access.log
+  fields: {log_type: access}
+
+# ------------------------------ Logstash Output -------------------------------
+output.logstash:
+  enabled: true
+  # The Logstash hosts
+  hosts: ["localhost:5044"]
+
+# ================================= Processors =================================
+processors:
+  - add_host_metadata:
+      when.not.contains.tags: forwarded
+  - add_cloud_metadata: ~
+  - add_docker_metadata: ~
+  - add_kubernetes_metadata: ~
+
+# ================================== Logging ===================================
+
+# Sets log level. The default log level is info.
+# Available log levels are: error, warning, info, debug
+logging.level: debug
+filebeat.registry.flush: 30s
